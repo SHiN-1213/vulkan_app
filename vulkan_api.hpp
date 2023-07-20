@@ -1,7 +1,25 @@
 #pragma once
 
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+#include "reel_err.hpp"
 
-class VulkanApi
+namespace reel
 {
+	class VulkanApi
+	{
+	private:
+		static constexpr uint32_t WIDTH = 800;
+		static constexpr uint32_t HEIGHT = 600;
 
-};
+		GLFWwindow *m_window;
+	public:
+		void run();
+	private:
+		void initWindow();
+		void initVulkan();
+		void mainLoop();
+		void cleanup();
+	};
+
+}

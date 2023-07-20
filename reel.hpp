@@ -1,13 +1,11 @@
-//
-// Created by Kamih on 2023/07/20.
-//
-
 #pragma once
+
+#include "vulkan_api.hpp"
 
 namespace reel
 {
 
-	class reel
+	class Reel
 	{
 
 	};

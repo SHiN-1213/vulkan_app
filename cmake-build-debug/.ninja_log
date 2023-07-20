@@ -1,0 +1,25 @@
+# ninja log v5
+4	483	7115158442846705	CMakeFiles/vulkan.dir/main.cpp.obj	1ac6265af4f29453
+483	681	7115158444793183	vulkan.exe	da1bec753a596135
+7	77	7115162458857713	CMakeFiles/vulkan.dir/vulkan_api.cpp.obj	5a22cf4f92dbfbad
+12	82	7115162458912715	CMakeFiles/vulkan.dir/reel.cpp.obj	2f995c26cf910d94
+3	71	7115162458797735	CMakeFiles/vulkan.dir/reel_err.cpp.obj	d4afe1eb0ac2daf6
+1	126	7115162479587379	build.ninja	466b669025ce2210
+3	319	7115162617817323	CMakeFiles/vulkan.dir/main.cpp.obj	1ac6265af4f29453
+319	415	7115162618737426	vulkan.exe	da1bec753a596135
+11	86	7115181111190727	CMakeFiles/vulkan.dir/vulkan_api.cpp.obj	5a22cf4f92dbfbad
+16	88	7115181111195717	CMakeFiles/vulkan.dir/reel.cpp.obj	2f995c26cf910d94
+9	76	7115182340434973	CMakeFiles/vulkan.dir/vulkan_api.cpp.obj	5a22cf4f92dbfbad
+14	78	7115182340464968	CMakeFiles/vulkan.dir/reel.cpp.obj	2f995c26cf910d94
+4	356	7115182343250320	CMakeFiles/vulkan.dir/main.cpp.obj	1ac6265af4f29453
+356	463	7115182344280517	vulkan.exe	da1bec753a596135
+15	84	7115186703502091	CMakeFiles/vulkan.dir/reel.cpp.obj	2f995c26cf910d94
+8	85	7115186703507093	CMakeFiles/vulkan.dir/vulkan_api.cpp.obj	5a22cf4f92dbfbad
+3	343	7115186706108045	CMakeFiles/vulkan.dir/main.cpp.obj	1ac6265af4f29453
+343	442	7115186707052873	vulkan.exe	da1bec753a596135
+16	194	7115214241156337	CMakeFiles/vulkan.dir/reel.cpp.obj	2f995c26cf910d94
+9	199	7115214241216345	CMakeFiles/vulkan.dir/vulkan_api.cpp.obj	5a22cf4f92dbfbad
+4	463	7115214243848137	CMakeFiles/vulkan.dir/main.cpp.obj	1ac6265af4f29453
+463	636	7115214245547153	vulkan.exe	da1bec753a596135
+3	155	7115215279634839	CMakeFiles/vulkan.dir/vulkan_api.cpp.obj	5a22cf4f92dbfbad
+155	282	7115215280862857	vulkan.exe	da1bec753a596135
