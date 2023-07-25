@@ -1,14 +1,20 @@
 #pragma once
 
+#define VK_USE_PLATFORM_WIN32_KHR
 #define GLFW_INCLUDE_VULKAN
 
 #include <GLFW/glfw3.h>
+
+#define GLFW_EXPOSE_NATIVE_WIN32
+
+#include <GLFW/glfw3native.h>
 
 #include <iostream>
 #include <cstring>
 #include <stdexcept>
 #include <vector>
 #include <optional>
+#include <set>
 
 #include "reel_err.hpp"
 
@@ -36,14 +42,26 @@ namespace reel
 
 		VkPhysicalDevice m_physical_device = VK_NULL_HANDLE;
 
-		struct QueueFamilyIndices {
+		struct QueueFamilyIndices
+		{
 			std::optional<uint32_t> graphicsFamily;
+			std::optional<uint32_t> presentFamily;
 
-			bool isComplete() {
-				return graphicsFamily.has_value();
+
+			bool isComplete()
+			{
+				return graphicsFamily.has_value() &&
+				       presentFamily.has_value();
 			}
 		};
 
+		VkDevice m_device;
+
+		VkQueue m_graphics_queue;
+
+		VkSurfaceKHR m_surface;
+
+		VkQueue m_present_queue;
 
 	public:
 		void run();
@@ -56,19 +74,23 @@ namespace reel
 
 		bool checkValidationLayerSupport();
 
-		std::vector<const char*> getRequiredExtensions();
+		std::vector<const char *> getRequiredExtensions();
 
 		void createInstance();
 
-		void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+		void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);
 
 		void setupDebugMessenger();
+
+		void createSurface();
 
 		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 
 		bool isDeviceSuitable(VkPhysicalDevice device);
 
 		void pickPhysicalDevice();
+
+		void createLogicalDevice();
 
 		void mainLoop();
 

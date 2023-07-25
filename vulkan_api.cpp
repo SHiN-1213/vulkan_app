@@ -25,7 +25,9 @@ namespace reel
 	{
 		createInstance();
 		setupDebugMessenger();
+		createSurface();
 		pickPhysicalDevice();
+		createLogicalDevice();
 	}
 
 	bool VulkanApi::checkValidationLayerSupport()
@@ -188,6 +190,15 @@ namespace reel
 		}
 	}
 
+	void VulkanApi::createSurface()
+	{
+		if (glfwCreateWindowSurface(m_instance, m_window, nullptr, &m_surface) != VK_SUCCESS)
+		{
+			throw std::runtime_error("failed to create window surface!");
+		}
+	}
+
+
 	VulkanApi::QueueFamilyIndices VulkanApi::findQueueFamilies(VkPhysicalDevice device)
 	{
 		QueueFamilyIndices indices;
@@ -204,6 +215,13 @@ namespace reel
 			if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
 			{
 				indices.graphicsFamily = i;
+			}
+
+			VkBool32 presentSupport = false;
+			vkGetPhysicalDeviceSurfaceSupportKHR(device, i, m_surface, &presentSupport);
+
+			if (presentSupport) {
+				indices.presentFamily = i;
 			}
 
 			if (indices.isComplete())
@@ -257,6 +275,46 @@ namespace reel
 
 	}
 
+	void VulkanApi::createLogicalDevice()
+	{
+		QueueFamilyIndices indices = findQueueFamilies(m_physical_device);
+
+		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+		std::set<uint32_t> uniqueQueueFamilies = {indices.graphicsFamily.value(), indices.presentFamily.value()};
+
+		float queuePriority = 1.0f;
+		for (uint32_t queueFamily : uniqueQueueFamilies) {
+			VkDeviceQueueCreateInfo queueCreateInfo{};
+			queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+			queueCreateInfo.queueFamilyIndex = queueFamily;
+			queueCreateInfo.queueCount = 1;
+			queueCreateInfo.pQueuePriorities = &queuePriority;
+			queueCreateInfos.push_back(queueCreateInfo);
+		}
+
+		VkPhysicalDeviceFeatures deviceFeatures{};
+
+		VkDeviceCreateInfo createInfo{};
+		createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+		createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+		createInfo.pQueueCreateInfos = queueCreateInfos.data();
+		createInfo.pEnabledFeatures = &deviceFeatures;
+
+		createInfo.enabledExtensionCount = 0;
+		if (m_enable_validation_layers) {
+			createInfo.enabledLayerCount = static_cast<uint32_t>(m_validation_layers.size());
+			createInfo.ppEnabledLayerNames = m_validation_layers.data();
+		} else {
+			createInfo.enabledLayerCount = 0;
+		}
+
+		if (vkCreateDevice(m_physical_device, &createInfo, nullptr, &m_device) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create logical device!");
+		}
+
+		vkGetDeviceQueue(m_device, indices.graphicsFamily.value(), 0, &m_graphics_queue);
+		vkGetDeviceQueue(m_device, indices.presentFamily.value(), 0, &m_graphics_queue);
+	}
 
 	void VulkanApi::mainLoop()
 	{
@@ -269,13 +327,17 @@ namespace reel
 
 	void VulkanApi::cleanup()
 	{
+		vkDestroyDevice(m_device, nullptr);
+
+
 		if (m_enable_validation_layers)
 		{
 			DestroyDebugUtilsMessengerEXT(m_instance, m_debug_messenger, nullptr);
 		}
-
+		vkDestroySurfaceKHR(m_instance, m_surface, nullptr);
 		vkDestroyInstance(m_instance, nullptr);
 		glfwDestroyWindow(m_window);
 		glfwTerminate();
 	}
+
 }
