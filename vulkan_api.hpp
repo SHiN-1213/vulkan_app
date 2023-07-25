@@ -15,6 +15,9 @@
 #include <vector>
 #include <optional>
 #include <set>
+#include <cstdint>
+#include <limits>
+#include <algorithm>
 
 #include "reel_err.hpp"
 
@@ -55,13 +58,32 @@ namespace reel
 			}
 		};
 
+		const std::vector<const char *> m_device_extensions = {
+				VK_KHR_SWAPCHAIN_EXTENSION_NAME
+		};
+
 		VkDevice m_device;
 
 		VkQueue m_graphics_queue;
 
+		VkQueue m_present_queue;
+
 		VkSurfaceKHR m_surface;
 
-		VkQueue m_present_queue;
+		struct SwapChainSupportDetails
+		{
+			VkSurfaceCapabilitiesKHR capabilities;
+			std::vector<VkSurfaceFormatKHR> formats;
+			std::vector<VkPresentModeKHR> presentModes;
+		};
+
+		VkSwapchainKHR m_swap_chain;
+		std::vector<VkImage> m_swap_chain_images;
+		VkFormat m_swap_chain_image_format;
+		VkExtent2D m_swap_chain_extent;
+
+		std::vector<VkImageView> m_swap_chain_image_views;
+
 
 	public:
 		void run();
@@ -86,11 +108,25 @@ namespace reel
 
 		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 
+		bool checkDeviceExtensionSupport(VkPhysicalDevice device);
+
+		SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
+
 		bool isDeviceSuitable(VkPhysicalDevice device);
 
 		void pickPhysicalDevice();
 
 		void createLogicalDevice();
+
+		VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats);
+
+		VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes);
+
+		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+
+		void createSwapChain();
+
+		void createImageViews();
 
 		void mainLoop();
 
