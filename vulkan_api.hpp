@@ -18,6 +18,8 @@
 #include <cstdint>
 #include <limits>
 #include <algorithm>
+#include <fstream>
+
 
 #include "reel_err.hpp"
 
@@ -84,6 +86,9 @@ namespace reel
 
 		std::vector<VkImageView> m_swap_chain_image_views;
 
+		VkPipelineLayout m_pipeline_layout;
+
+
 
 	public:
 		void run();
@@ -122,11 +127,15 @@ namespace reel
 
 		VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes);
 
-		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
 
 		void createSwapChain();
 
 		void createImageViews();
+
+		VkShaderModule createShaderModule(const std::vector<char> &code);
+
+		void createGraphicsPipeline();
 
 		void mainLoop();
 
