@@ -86,7 +86,11 @@ namespace reel
 
 		std::vector<VkImageView> m_swap_chain_image_views;
 
+		VkRenderPass m_render_pass;
+
 		VkPipelineLayout m_pipeline_layout;
+
+		VkPipeline m_graphics_pipeline;
 
 
 
@@ -132,6 +136,8 @@ namespace reel
 		void createSwapChain();
 
 		void createImageViews();
+
+		void createRenderPass();
 
 		VkShaderModule createShaderModule(const std::vector<char> &code);
 

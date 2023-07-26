@@ -30,6 +30,7 @@ namespace reel
 		createLogicalDevice();
 		createSwapChain();
 		createImageViews();
+		createRenderPass();
 		createGraphicsPipeline();
 	}
 
@@ -519,6 +520,40 @@ namespace reel
 
 	}
 
+	void VulkanApi::createRenderPass()
+	{
+		VkAttachmentDescription colorAttachment{};
+		colorAttachment.format = m_swap_chain_image_format;
+		colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+		colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+		VkAttachmentReference colorAttachmentRef{};
+		colorAttachmentRef.attachment = 0;
+		colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+		VkSubpassDescription subpass{};
+		subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+		subpass.colorAttachmentCount = 1;
+		subpass.pColorAttachments = &colorAttachmentRef;
+
+		VkRenderPassCreateInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+		renderPassInfo.attachmentCount = 1;
+		renderPassInfo.pAttachments = &colorAttachment;
+		renderPassInfo.subpassCount = 1;
+		renderPassInfo.pSubpasses = &subpass;
+
+		if (vkCreateRenderPass(m_device, &renderPassInfo, nullptr, &m_render_pass) != VK_SUCCESS)
+		{
+			throw std::runtime_error("failed to create render pass!");
+		}
+	}
+
 	static std::vector<char> readFile(const std::string &filename)
 	{
 		std::ifstream file(filename, std::ios::ate | std::ios::binary);
@@ -677,6 +712,30 @@ namespace reel
 			throw std::runtime_error("failed to create pipeline layout!");
 		}
 
+		VkGraphicsPipelineCreateInfo pipelineInfo{};
+		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+		pipelineInfo.stageCount = 2;
+		pipelineInfo.pStages = shaderStages;
+		pipelineInfo.pVertexInputState = &vertexInputInfo;
+		pipelineInfo.pInputAssemblyState = &inputAssembly;
+		pipelineInfo.pViewportState = &viewportState;
+		pipelineInfo.pRasterizationState = &rasterizer;
+		pipelineInfo.pMultisampleState = &multisampling;
+		pipelineInfo.pDepthStencilState = nullptr; // Optional
+		pipelineInfo.pColorBlendState = &colorBlending;
+		pipelineInfo.pDynamicState = &dynamicState;
+		pipelineInfo.layout = m_pipeline_layout;
+		pipelineInfo.renderPass = m_render_pass;
+		pipelineInfo.subpass = 0;
+		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
+		pipelineInfo.basePipelineIndex = -1; // Optional
+
+		if (vkCreateGraphicsPipelines(m_device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphics_pipeline) !=
+		    VK_SUCCESS)
+		{
+			throw std::runtime_error("failed to create graphics pipeline!");
+		}
+
 		vkDestroyShaderModule(m_device, fragShaderModule, nullptr);
 		vkDestroyShaderModule(m_device, vertShaderModule, nullptr);
 	}
@@ -692,7 +751,9 @@ namespace reel
 
 	void VulkanApi::cleanup()
 	{
+		vkDestroyPipeline(m_device, m_graphics_pipeline, nullptr);
 		vkDestroyPipelineLayout(m_device, m_pipeline_layout, nullptr);
+		vkDestroyRenderPass(m_device, m_render_pass, nullptr);
 
 		for (auto imageView: m_swap_chain_image_views)
 		{
