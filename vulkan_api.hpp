@@ -31,6 +31,9 @@ namespace reel
 		static constexpr uint32_t m_WIDTH = 800;
 		static constexpr uint32_t m_HEIGHT = 600;
 
+		static constexpr int m_MAX_FRAMES_IN_FLIGHT = 2;
+
+
 		const std::vector<const char *> m_validation_layers = {
 				"VK_LAYER_KHRONOS_validation"
 		};
@@ -96,16 +99,21 @@ namespace reel
 
 		VkCommandPool m_command_pool;
 
-		VkCommandBuffer commandBuffer;
+		uint32_t m_current_frame = 0;
 
-		VkSemaphore m_image_available_semaphore;
-		VkSemaphore m_render_finished_semaphore;
-		VkFence m_in_flight_fence;
+		std::vector<VkCommandBuffer> m_command_buffers;
+
+		std::vector<VkSemaphore> m_image_available_semaphores;
+		std::vector<VkSemaphore> m_render_finished_semaphores;
+		std::vector<VkFence> m_in_flight_fences;
+
+		bool framebufferResized = false;
 
 	public:
 		void run();
 
 	private:
+		static void framebufferResizeCallback(GLFWwindow *window, int width, int height);
 
 		void initWindow();
 
@@ -143,6 +151,10 @@ namespace reel
 
 		void createSwapChain();
 
+		void cleanupSwapChain();
+
+		void recreateSwapChain();
+
 		void createImageViews();
 
 		void createRenderPass();
@@ -155,7 +167,7 @@ namespace reel
 
 		void createCommandPool();
 
-		void createCommandBuffer();
+		void createCommandBuffers();
 
 		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
