@@ -92,7 +92,15 @@ namespace reel
 
 		VkPipeline m_graphics_pipeline;
 
+		std::vector<VkFramebuffer> m_swap_chain_frame_buffers;
 
+		VkCommandPool m_command_pool;
+
+		VkCommandBuffer commandBuffer;
+
+		VkSemaphore m_image_available_semaphore;
+		VkSemaphore m_render_finished_semaphore;
+		VkFence m_in_flight_fence;
 
 	public:
 		void run();
@@ -142,6 +150,18 @@ namespace reel
 		VkShaderModule createShaderModule(const std::vector<char> &code);
 
 		void createGraphicsPipeline();
+
+		void createFramebuffers();
+
+		void createCommandPool();
+
+		void createCommandBuffer();
+
+		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+		void createSyncObjects();
+
+		void drawFrame();
 
 		void mainLoop();
 
