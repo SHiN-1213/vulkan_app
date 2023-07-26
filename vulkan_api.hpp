@@ -145,14 +145,20 @@ namespace reel
 		};
 
 		const std::vector<Vertex> m_vertices = {
-				{{0.0f,  -0.5f}, {1.0f, 1.0f, 1.0f}},
-				{{0.5f,  0.5f},  {0.0f, 1.0f, 0.0f}},
-				{{-0.5f, 0.5f},  {0.0f, 0.0f, 1.0f}}
+				{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+				{{0.5f,  -0.5f}, {0.0f, 1.0f, 0.0f}},
+				{{0.5f,  0.5f},  {0.0f, 0.0f, 1.0f}},
+				{{-0.5f, 0.5f},  {1.0f, 1.0f, 1.0f}}
+		};
+
+		const std::vector<uint16_t> m_indices = {
+				0, 1, 2, 2, 3, 0
 		};
 
 		VkBuffer m_vertex_buffer;
 		VkDeviceMemory vertexBufferMemory;
-
+		VkBuffer m_index_buffer;
+		VkDeviceMemory m_index_buffer_memory;
 
 	public:
 		void run();
@@ -219,6 +225,8 @@ namespace reel
 		void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
 		void createVertexBuffer();
+
+		void createIndexBuffer();
 
 		uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
