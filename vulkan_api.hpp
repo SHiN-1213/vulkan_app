@@ -1,4 +1,5 @@
 #pragma once
+//#define NDEBUG
 
 #define VK_USE_PLATFORM_WIN32_KHR
 #define GLFW_INCLUDE_VULKAN
@@ -10,7 +11,7 @@
 #include <GLFW/glfw3native.h>
 
 #define GLM_FORCE_RADIANS
-
+#define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -175,12 +176,12 @@ namespace reel
 		VkBuffer m_index_buffer;
 		VkDeviceMemory m_index_buffer_memory;
 
-		std::vector<VkBuffer> uniformBuffers;
-		std::vector<VkDeviceMemory> uniformBuffersMemory;
-		std::vector<void *> uniformBuffersMapped;
+		std::vector<VkBuffer> m_uniform_buffers;
+		std::vector<VkDeviceMemory> m_uniform_buffers_memory;
+		std::vector<void *> m_uniform_buffers_mapped;
 
-		VkDescriptorPool descriptorPool;
-		std::vector<VkDescriptorSet> descriptorSets;
+		VkDescriptorPool m_descriptor_pool;
+		std::vector<VkDescriptorSet> m_descriptor_sets;
 
 	public:
 		void run();
