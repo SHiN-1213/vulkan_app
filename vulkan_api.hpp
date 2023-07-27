@@ -8,7 +8,12 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 
 #include <GLFW/glfw3native.h>
+
+#define GLM_FORCE_RADIANS
+
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 
 #include <iostream>
 #include <cstring>
@@ -21,7 +26,7 @@
 #include <limits>
 #include <algorithm>
 #include <fstream>
-
+#include <chrono>
 
 #include "reel_err.hpp"
 
@@ -93,6 +98,8 @@ namespace reel
 
 		VkRenderPass m_render_pass;
 
+		VkDescriptorSetLayout m_descriptor_set_layout;
+
 		VkPipelineLayout m_pipeline_layout;
 
 		VkPipeline m_graphics_pipeline;
@@ -109,7 +116,7 @@ namespace reel
 		std::vector<VkSemaphore> m_render_finished_semaphores;
 		std::vector<VkFence> m_in_flight_fences;
 
-		bool framebufferResized = false;
+		bool m_framebuffer_resized = false;
 
 		struct Vertex
 		{
@@ -155,10 +162,25 @@ namespace reel
 				0, 1, 2, 2, 3, 0
 		};
 
+		struct UniformBufferObject
+		{
+			glm::mat4 model;
+			glm::mat4 view;
+			glm::mat4 proj;
+		};
+
 		VkBuffer m_vertex_buffer;
-		VkDeviceMemory vertexBufferMemory;
+		VkDeviceMemory m_vertex_buffer_memory;
+
 		VkBuffer m_index_buffer;
 		VkDeviceMemory m_index_buffer_memory;
+
+		std::vector<VkBuffer> uniformBuffers;
+		std::vector<VkDeviceMemory> uniformBuffersMemory;
+		std::vector<void *> uniformBuffersMapped;
+
+		VkDescriptorPool descriptorPool;
+		std::vector<VkDescriptorSet> descriptorSets;
 
 	public:
 		void run();
@@ -210,6 +232,8 @@ namespace reel
 
 		void createRenderPass();
 
+		void createDescriptorSetLayout();
+
 		VkShaderModule createShaderModule(const std::vector<char> &code);
 
 		void createGraphicsPipeline();
@@ -228,6 +252,12 @@ namespace reel
 
 		void createIndexBuffer();
 
+		void createUniformBuffers();
+
+		void createDescriptorPool();
+
+		void createDescriptorSets();
+
 		uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
 		void createCommandBuffers();
@@ -235,6 +265,8 @@ namespace reel
 		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
 		void createSyncObjects();
+
+		void updateUniformBuffer(uint32_t currentImage);
 
 		void drawFrame();
 

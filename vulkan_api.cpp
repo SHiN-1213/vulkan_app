@@ -13,7 +13,7 @@ namespace reel
 	void VulkanApi::framebufferResizeCallback(GLFWwindow *window, int width, int height)
 	{
 		auto app = reinterpret_cast<VulkanApi *>(glfwGetWindowUserPointer(window));
-		app->framebufferResized = true;
+		app->m_framebuffer_resized = true;
 	}
 
 	void VulkanApi::initWindow()
@@ -39,11 +39,15 @@ namespace reel
 		createSwapChain();
 		createImageViews();
 		createRenderPass();
+		createDescriptorSetLayout();
 		createGraphicsPipeline();
 		createFramebuffers();
 		createCommandPool();
 		createVertexBuffer();
 		createIndexBuffer();
+		createUniformBuffers();
+		createDescriptorPool();
+		createDescriptorSets();
 		createCommandBuffers();
 		createSyncObjects();
 	}
@@ -612,6 +616,26 @@ namespace reel
 		}
 	}
 
+	void VulkanApi::createDescriptorSetLayout()
+	{
+		VkDescriptorSetLayoutBinding uboLayoutBinding{};
+		uboLayoutBinding.binding = 0;
+		uboLayoutBinding.descriptorCount = 1;
+		uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		uboLayoutBinding.pImmutableSamplers = nullptr;
+		uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+		VkDescriptorSetLayoutCreateInfo layoutInfo{};
+		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		layoutInfo.bindingCount = 1;
+		layoutInfo.pBindings = &uboLayoutBinding;
+
+		if (vkCreateDescriptorSetLayout(m_device, &layoutInfo, nullptr, &m_descriptor_set_layout) != VK_SUCCESS)
+		{
+			throw std::runtime_error("failed to create descriptor set layout!");
+		}
+	}
+
 	static std::vector<char> readFile(const std::string &filename)
 	{
 		std::ifstream file(filename, std::ios::ate | std::ios::binary);
@@ -722,7 +746,7 @@ namespace reel
 		rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
 		rasterizer.lineWidth = 1.0f;
 		rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-		rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+		rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 		rasterizer.depthBiasEnable = VK_FALSE;
 		rasterizer.depthBiasConstantFactor = 0.0f; // Optional
 		rasterizer.depthBiasClamp = 0.0f; // Optional
@@ -762,10 +786,12 @@ namespace reel
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo.setLayoutCount = 0; // Optional
-		pipelineLayoutInfo.pSetLayouts = nullptr; // Optional
+		pipelineLayoutInfo.setLayoutCount = 1;
+		pipelineLayoutInfo.pSetLayouts = &m_descriptor_set_layout;
 		pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
 		pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
+
+
 
 		if (vkCreatePipelineLayout(m_device, &pipelineLayoutInfo, nullptr, &m_pipeline_layout) != VK_SUCCESS)
 		{
@@ -924,7 +950,7 @@ namespace reel
 		vkUnmapMemory(m_device, stagingBufferMemory);
 
 		createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-		             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_vertex_buffer, vertexBufferMemory);
+		             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_vertex_buffer, m_vertex_buffer_memory);
 
 		copyBuffer(stagingBuffer, m_vertex_buffer, bufferSize);
 
@@ -954,6 +980,79 @@ namespace reel
 
 		vkDestroyBuffer(m_device, stagingBuffer, nullptr);
 		vkFreeMemory(m_device, stagingBufferMemory, nullptr);
+	}
+
+	void VulkanApi::createUniformBuffers()
+	{
+		VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+
+		uniformBuffers.resize(m_MAX_FRAMES_IN_FLIGHT);
+		uniformBuffersMemory.resize(m_MAX_FRAMES_IN_FLIGHT);
+		uniformBuffersMapped.resize(m_MAX_FRAMES_IN_FLIGHT);
+
+		for (size_t i = 0; i < m_MAX_FRAMES_IN_FLIGHT; i++)
+		{
+			createBuffer(bufferSize,
+			             VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+			             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+			             uniformBuffers[i],
+			             uniformBuffersMemory[i]);
+
+			vkMapMemory(m_device, uniformBuffersMemory[i], 0, bufferSize, 0, &uniformBuffersMapped[i]);
+		}
+	}
+
+	void VulkanApi::createDescriptorPool()
+	{
+		VkDescriptorPoolSize poolSize{};
+		poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		poolSize.descriptorCount = static_cast<uint32_t>(m_MAX_FRAMES_IN_FLIGHT);
+
+		VkDescriptorPoolCreateInfo poolInfo{};
+		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+		poolInfo.poolSizeCount = 1;
+		poolInfo.pPoolSizes = &poolSize;
+		poolInfo.maxSets = static_cast<uint32_t>(m_MAX_FRAMES_IN_FLIGHT);
+
+		if (vkCreateDescriptorPool(m_device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS)
+		{
+			throw std::runtime_error("failed to create descriptor pool!");
+		}
+	}
+
+	void VulkanApi::createDescriptorSets()
+	{
+		std::vector<VkDescriptorSetLayout> layouts(m_MAX_FRAMES_IN_FLIGHT, m_descriptor_set_layout);
+		VkDescriptorSetAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+		allocInfo.descriptorPool = descriptorPool;
+		allocInfo.descriptorSetCount = static_cast<uint32_t>(m_MAX_FRAMES_IN_FLIGHT);
+		allocInfo.pSetLayouts = layouts.data();
+
+		descriptorSets.resize(m_MAX_FRAMES_IN_FLIGHT);
+		if (vkAllocateDescriptorSets(m_device, &allocInfo, descriptorSets.data()) != VK_SUCCESS)
+		{
+			throw std::runtime_error("failed to allocate descriptor sets!");
+		}
+
+		for (size_t i = 0; i < m_MAX_FRAMES_IN_FLIGHT; i++)
+		{
+			VkDescriptorBufferInfo bufferInfo{};
+			bufferInfo.buffer = uniformBuffers[i];
+			bufferInfo.offset = 0;
+			bufferInfo.range = sizeof(UniformBufferObject);
+
+			VkWriteDescriptorSet descriptorWrite{};
+			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrite.dstSet = descriptorSets[i];
+			descriptorWrite.dstBinding = 0;
+			descriptorWrite.dstArrayElement = 0;
+			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			descriptorWrite.descriptorCount = 1;
+			descriptorWrite.pBufferInfo = &bufferInfo;
+
+			vkUpdateDescriptorSets(m_device, 1, &descriptorWrite, 0, nullptr);
+		}
 	}
 
 	uint32_t VulkanApi::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
@@ -1036,6 +1135,9 @@ namespace reel
 
 		vkCmdBindIndexBuffer(commandBuffer, m_index_buffer, 0, VK_INDEX_TYPE_UINT16);
 
+		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline_layout, 0, 1,
+		                        &descriptorSets[m_current_frame], 0, nullptr);
+
 		vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(m_indices.size()), 1, 0, 0, 0);
 
 		vkCmdEndRenderPass(commandBuffer);
@@ -1072,6 +1174,23 @@ namespace reel
 		}
 	}
 
+	void VulkanApi::updateUniformBuffer(uint32_t currentImage)
+	{
+		static auto startTime = std::chrono::high_resolution_clock::now();
+
+		auto currentTime = std::chrono::high_resolution_clock::now();
+		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+		UniformBufferObject ubo{};
+		ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		ubo.proj = glm::perspective(glm::radians(45.0f), m_swap_chain_extent.width / (float) m_swap_chain_extent.height,
+		                            0.1f, 10.0f);
+		ubo.proj[1][1] *= -1;
+
+		memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
+	}
+
 	void VulkanApi::drawFrame()
 	{
 		vkWaitForFences(m_device, 1, &m_in_flight_fences[m_current_frame], VK_TRUE, UINT64_MAX);
@@ -1089,6 +1208,8 @@ namespace reel
 		{
 			throw std::runtime_error("failed to acquire swap chain image!");
 		}
+
+		updateUniformBuffer(m_current_frame);
 
 		vkResetFences(m_device, 1, &m_in_flight_fences[m_current_frame]);
 
@@ -1128,9 +1249,9 @@ namespace reel
 		presentInfo.pImageIndices = &imageIndex;
 
 		result = vkQueuePresentKHR(m_present_queue, &presentInfo);//request to the swap chain
-		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || framebufferResized)
+		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || m_framebuffer_resized)
 		{
-			framebufferResized = false;
+			m_framebuffer_resized = false;
 			recreateSwapChain();
 		}
 		else if (result != VK_SUCCESS)
@@ -1155,16 +1276,26 @@ namespace reel
 	{
 		cleanupSwapChain();
 
-		vkDestroyBuffer(m_device, m_index_buffer, nullptr);
-		vkFreeMemory(m_device, m_index_buffer_memory, nullptr);
-
-		vkDestroyBuffer(m_device, m_vertex_buffer, nullptr);
-		vkFreeMemory(m_device, vertexBufferMemory, nullptr);
-
 		vkDestroyPipeline(m_device, m_graphics_pipeline, nullptr);
 		vkDestroyPipelineLayout(m_device, m_pipeline_layout, nullptr);
 
 		vkDestroyRenderPass(m_device, m_render_pass, nullptr);
+
+		for (size_t i = 0; i < m_MAX_FRAMES_IN_FLIGHT; i++)
+		{
+			vkDestroyBuffer(m_device, uniformBuffers[i], nullptr);
+			vkFreeMemory(m_device, uniformBuffersMemory[i], nullptr);
+		}
+
+		vkDestroyDescriptorPool(m_device, descriptorPool, nullptr);
+		vkDestroyDescriptorSetLayout(m_device, m_descriptor_set_layout, nullptr);
+
+		vkDestroyBuffer(m_device, m_index_buffer, nullptr);
+		vkFreeMemory(m_device, m_index_buffer_memory, nullptr);
+
+		vkDestroyBuffer(m_device, m_vertex_buffer, nullptr);
+		vkFreeMemory(m_device, m_vertex_buffer_memory, nullptr);
+
 
 		for (size_t i = 0; i < m_MAX_FRAMES_IN_FLIGHT; i++)
 		{
