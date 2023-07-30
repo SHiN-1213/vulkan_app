@@ -2,12 +2,14 @@ cmake_minimum_required(VERSION 3.25)
 project(vulkan)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS "-O3")
 
 include_directories(C:/glfw-3.3.8.bin.WIN64/glfw-3.3.8.bin.WIN64/include)
 include_directories(C:/glm)
 include_directories(C:/VulkanSDK/1.3.250.1/Include)
 include_directories(C:/Program Files (x86) /Windows Kits/10/Include/10.0.22000.0/um)
 include_directories(C:/stb-master)
+include_directories(C:/tinyobjloader)
 
 
 link_directories(C:/VulkanSDK/1.3.250.1/Lib)

@@ -1,0 +1,6 @@
+# ninja log v5
+18	100	7123871931424222	CMakeFiles/vulkan.dir/reel_err.cpp.obj	c2dc0c2433450965
+6	3285	7123871963249414	CMakeFiles/vulkan.dir/reel.cpp.obj	56b1f54ba485dda8
+1	3331	7123871963741270	CMakeFiles/vulkan.dir/main.cpp.obj	7cf94ee611177c54
+12	12692	7123872057334968	CMakeFiles/vulkan.dir/vulkan_api.cpp.obj	22fc33fd794792d
+12692	12855	7123872058922018	vulkan.exe	df816eac5b42fbaa

@@ -51,29 +51,29 @@ build cmake_object_order_depends_target_vulkan: phony || CMakeFiles/vulkan.dir
 
 build CMakeFiles/vulkan.dir/main.cpp.obj: CXX_COMPILER__vulkan_Debug C$:/Users/Kamih/CLionProjects/vulkan/main.cpp || cmake_object_order_depends_target_vulkan
   DEP_FILE = CMakeFiles\vulkan.dir\main.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
-  INCLUDES = -IC:/glfw-3.3.8.bin.WIN64/glfw-3.3.8.bin.WIN64/include -IC:/glm -IC:/VulkanSDK/1.3.250.1/Include -IC:/Program -IC:/Users/Kamih/CLionProjects/vulkan/Files -IC:/Users/Kamih/CLionProjects/vulkan/( -IC:/Users/Kamih/CLionProjects/vulkan/x86 -IC:/Users/Kamih/CLionProjects/vulkan/) -I/Windows -IC:/Users/Kamih/CLionProjects/vulkan/Kits/10/Include/10.0.22000.0/um -IC:/stb-master
+  FLAGS = -O3 -g -fdiagnostics-color=always
+  INCLUDES = -IC:/glfw-3.3.8.bin.WIN64/glfw-3.3.8.bin.WIN64/include -IC:/glm -IC:/VulkanSDK/1.3.250.1/Include -IC:/Program -IC:/Users/Kamih/CLionProjects/vulkan/Files -IC:/Users/Kamih/CLionProjects/vulkan/( -IC:/Users/Kamih/CLionProjects/vulkan/x86 -IC:/Users/Kamih/CLionProjects/vulkan/) -I/Windows -IC:/Users/Kamih/CLionProjects/vulkan/Kits/10/Include/10.0.22000.0/um -IC:/stb-master -IC:/tinyobjloader
   OBJECT_DIR = CMakeFiles\vulkan.dir
   OBJECT_FILE_DIR = CMakeFiles\vulkan.dir
 
 build CMakeFiles/vulkan.dir/reel.cpp.obj: CXX_COMPILER__vulkan_Debug C$:/Users/Kamih/CLionProjects/vulkan/reel.cpp || cmake_object_order_depends_target_vulkan
   DEP_FILE = CMakeFiles\vulkan.dir\reel.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
-  INCLUDES = -IC:/glfw-3.3.8.bin.WIN64/glfw-3.3.8.bin.WIN64/include -IC:/glm -IC:/VulkanSDK/1.3.250.1/Include -IC:/Program -IC:/Users/Kamih/CLionProjects/vulkan/Files -IC:/Users/Kamih/CLionProjects/vulkan/( -IC:/Users/Kamih/CLionProjects/vulkan/x86 -IC:/Users/Kamih/CLionProjects/vulkan/) -I/Windows -IC:/Users/Kamih/CLionProjects/vulkan/Kits/10/Include/10.0.22000.0/um -IC:/stb-master
+  FLAGS = -O3 -g -fdiagnostics-color=always
+  INCLUDES = -IC:/glfw-3.3.8.bin.WIN64/glfw-3.3.8.bin.WIN64/include -IC:/glm -IC:/VulkanSDK/1.3.250.1/Include -IC:/Program -IC:/Users/Kamih/CLionProjects/vulkan/Files -IC:/Users/Kamih/CLionProjects/vulkan/( -IC:/Users/Kamih/CLionProjects/vulkan/x86 -IC:/Users/Kamih/CLionProjects/vulkan/) -I/Windows -IC:/Users/Kamih/CLionProjects/vulkan/Kits/10/Include/10.0.22000.0/um -IC:/stb-master -IC:/tinyobjloader
   OBJECT_DIR = CMakeFiles\vulkan.dir
   OBJECT_FILE_DIR = CMakeFiles\vulkan.dir
 
 build CMakeFiles/vulkan.dir/vulkan_api.cpp.obj: CXX_COMPILER__vulkan_Debug C$:/Users/Kamih/CLionProjects/vulkan/vulkan_api.cpp || cmake_object_order_depends_target_vulkan
   DEP_FILE = CMakeFiles\vulkan.dir\vulkan_api.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
-  INCLUDES = -IC:/glfw-3.3.8.bin.WIN64/glfw-3.3.8.bin.WIN64/include -IC:/glm -IC:/VulkanSDK/1.3.250.1/Include -IC:/Program -IC:/Users/Kamih/CLionProjects/vulkan/Files -IC:/Users/Kamih/CLionProjects/vulkan/( -IC:/Users/Kamih/CLionProjects/vulkan/x86 -IC:/Users/Kamih/CLionProjects/vulkan/) -I/Windows -IC:/Users/Kamih/CLionProjects/vulkan/Kits/10/Include/10.0.22000.0/um -IC:/stb-master
+  FLAGS = -O3 -g -fdiagnostics-color=always
+  INCLUDES = -IC:/glfw-3.3.8.bin.WIN64/glfw-3.3.8.bin.WIN64/include -IC:/glm -IC:/VulkanSDK/1.3.250.1/Include -IC:/Program -IC:/Users/Kamih/CLionProjects/vulkan/Files -IC:/Users/Kamih/CLionProjects/vulkan/( -IC:/Users/Kamih/CLionProjects/vulkan/x86 -IC:/Users/Kamih/CLionProjects/vulkan/) -I/Windows -IC:/Users/Kamih/CLionProjects/vulkan/Kits/10/Include/10.0.22000.0/um -IC:/stb-master -IC:/tinyobjloader
   OBJECT_DIR = CMakeFiles\vulkan.dir
   OBJECT_FILE_DIR = CMakeFiles\vulkan.dir
 
 build CMakeFiles/vulkan.dir/reel_err.cpp.obj: CXX_COMPILER__vulkan_Debug C$:/Users/Kamih/CLionProjects/vulkan/reel_err.cpp || cmake_object_order_depends_target_vulkan
   DEP_FILE = CMakeFiles\vulkan.dir\reel_err.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
-  INCLUDES = -IC:/glfw-3.3.8.bin.WIN64/glfw-3.3.8.bin.WIN64/include -IC:/glm -IC:/VulkanSDK/1.3.250.1/Include -IC:/Program -IC:/Users/Kamih/CLionProjects/vulkan/Files -IC:/Users/Kamih/CLionProjects/vulkan/( -IC:/Users/Kamih/CLionProjects/vulkan/x86 -IC:/Users/Kamih/CLionProjects/vulkan/) -I/Windows -IC:/Users/Kamih/CLionProjects/vulkan/Kits/10/Include/10.0.22000.0/um -IC:/stb-master
+  FLAGS = -O3 -g -fdiagnostics-color=always
+  INCLUDES = -IC:/glfw-3.3.8.bin.WIN64/glfw-3.3.8.bin.WIN64/include -IC:/glm -IC:/VulkanSDK/1.3.250.1/Include -IC:/Program -IC:/Users/Kamih/CLionProjects/vulkan/Files -IC:/Users/Kamih/CLionProjects/vulkan/( -IC:/Users/Kamih/CLionProjects/vulkan/x86 -IC:/Users/Kamih/CLionProjects/vulkan/) -I/Windows -IC:/Users/Kamih/CLionProjects/vulkan/Kits/10/Include/10.0.22000.0/um -IC:/stb-master -IC:/tinyobjloader
   OBJECT_DIR = CMakeFiles\vulkan.dir
   OBJECT_FILE_DIR = CMakeFiles\vulkan.dir
 
@@ -86,7 +86,7 @@ build CMakeFiles/vulkan.dir/reel_err.cpp.obj: CXX_COMPILER__vulkan_Debug C$:/Use
 # Link the executable vulkan.exe
 
 build vulkan.exe: CXX_EXECUTABLE_LINKER__vulkan_Debug CMakeFiles/vulkan.dir/main.cpp.obj CMakeFiles/vulkan.dir/reel.cpp.obj CMakeFiles/vulkan.dir/vulkan_api.cpp.obj CMakeFiles/vulkan.dir/reel_err.cpp.obj
-  FLAGS = -g
+  FLAGS = -O3 -g
   LINK_LIBRARIES = -lvulkan-1  -lglfw3  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   LINK_PATH = -LC:/VulkanSDK/1.3.250.1/Lib   -LC:/glfw-3.3.8.bin.WIN64/glfw-3.3.8.bin.WIN64/lib-mingw-w64
   OBJECT_DIR = CMakeFiles\vulkan.dir
