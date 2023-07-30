@@ -30,31 +30,31 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 14,
-				"parent" : 0
-			},
-			{
-				"command" : 1,
-				"file" : 0,
-				"line" : 11,
-				"parent" : 0
-			},
-			{
-				"command" : 1,
-				"file" : 0,
-				"line" : 12,
-				"parent" : 0
-			},
-			{
-				"command" : 2,
-				"file" : 0,
 				"line" : 16,
 				"parent" : 0
 			},
 			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 13,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 14,
+				"parent" : 0
+			},
+			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 17,
+				"line" : 18,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 19,
 				"parent" : 0
 			},
 			{
@@ -79,6 +79,12 @@
 				"command" : 3,
 				"file" : 0,
 				"line" : 9,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 10,
 				"parent" : 0
 			}
 		]
@@ -133,6 +139,10 @@
 				{
 					"backtrace" : 9,
 					"path" : "C:/Users/Kamih/CLionProjects/vulkan/Kits/10/Include/10.0.22000.0/um"
+				},
+				{
+					"backtrace" : 10,
+					"path" : "C:/stb-master"
 				}
 			],
 			"language" : "CXX",
